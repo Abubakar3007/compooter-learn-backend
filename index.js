@@ -1,3 +1,4 @@
+
 import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./db/db.js";
@@ -10,31 +11,32 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Init middleware
-app.use(cors({
+const corsOptions = {
     origin: [
         "http://localhost:3000",
         "http://localhost:5173",
         "https://compooter-learn-client.vercel.app"
     ],
     credentials: true,
-}));
+};
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
+
 app.use(express.json({ limit: "32kb" }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 connectDB();
 
+// API Routes
 app.use("/api/auth", authRoute);
 app.use("/api/progress", progressRoutes);
 app.use("/api/student", logicChallengeRoutes);
 
-// Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
